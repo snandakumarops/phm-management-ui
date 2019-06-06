@@ -1,1 +1,1 @@
-com.redhat.rest.example.demorest.DocumentCheckListGenerator
+com.redhat.makerchecker.ui.LoadSvg

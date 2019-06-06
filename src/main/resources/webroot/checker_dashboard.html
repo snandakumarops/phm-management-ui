@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Maker Checker</title>
+
+  <!-- PatternFly Styles -->
+  <meta charset="utf-8">
+  <title>Maker Checker</title>
+
+  <!-- PatternFly Styles -->
+  <link rel="stylesheet" href="css/patternfly.min.css">
+  <link rel="stylesheet" href="css/patternfly-additions.min.css">
+
+
+
+  <!-- Bootstrap base + PatternFly extensions + Your styles -->
+  <link rel="stylesheet" href="css/mystyles.css">
+
+  <!-- JS -->
+  <script src="js/jquery.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/patternfly.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+
+
+<script>
+  var app = angular.module('myApp', []);
+app.controller('FormController', function($scope,$http) {
+$scope.sendToChecker = function() {
+
+$http({
+        url: 'http://localhost:8037/sendToChecker/Personalization_Rules/'+$scope.textvalue,
+        method: "POST"
+    })
+    .then(function(response) {
+           $scope.responseMsg = response.data;
+
+    });
+}
+
+});
+</script>
+
+
+</head>
+<body class="cards-pf" ng-app="myApp" ng-controller="FormController">
+
+  <!-- PatternFly Horizontal Nav -->
+  <nav class="navbar navbar-default navbar-pf" role="navigation">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/">
+        <h2>Red Hat Decision Manager </h2>
+        <h3>Maker Checker</h3>
+      </a>
+    </div>
+    <div class="collapse navbar-collapse navbar-collapse-1">
+      <ul class="nav navbar-nav navbar-utility">
+
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            <span class="pficon pficon-user"></span>
+            Agent Login <b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu">
+            <li>
+              <a href="#">Link</a>
+            </li>
+            <li>
+              <a href="#">Another link</a>
+            </li>
+            <li>
+              <a href="#">Something else here</a>
+            </li>
+            <li class="divider"></li>
+            <li class="dropdown-submenu">
+              <a tabindex="-1" href="#">More options</a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a href="#">Link</a>
+                </li>
+                <li>
+                  <a href="#">Another link</a>
+                </li>
+                <li>
+                  <a href="#">Something else here</a>
+                </li>
+                <li class="divider"></li>
+                <li class="dropdown-header">Nav header</li>
+                <li>
+                  <a href="#">Separated link</a>
+                </li>
+                <li class="divider"></li>
+                <li>
+                  <a href="#">One more separated link</a>
+                </li>
+              </ul>
+            </li>
+            <li class="divider"></li>
+            <li>
+              <a href="#">One more separated link</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-primary">
+        <li>
+          <a href="#">Send For Checker Review</a>
+        </li>
+
+      </ul>
+    </div>
+  </nav>
+
+
+  <div class="container-fluid container-cards-pf">
+  <br/>
+    <br/>
+
+
+    <form class="form-horizontal">
+      <div class="form-group">
+        <label class="col-sm-2 control-label" >Artifact</label>
+        <div class="col-sm-10">
+          <select class="select input-lg" ng-model="selectbox">
+            <option value="volvo">Personalization_Rules</option>
+            <option value="volvo">DocumentGeneratorUI</option>
+
+          </select>
+
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label" >Author Comments/Change Request</label>
+        <div class="col-sm-8">
+          <textarea rows="5" cols="100" ng-model="textvalue">
+          </textarea>
+
+        </div>
+      </div>
+
+
+        <div align="center">
+<br/>
+          <hr/>
+          <h4 class="card-pf-title">Send for Checker Review, so that the changes cane be promoted.</h4>
+          <br/>
+        <button id="completeButton"  type="button" class="btn btn-primary" ng-click="sendToChecker();">Send To Checker</button>
+
+          <br/>
+
+          <br/>
+          <h4>{{responseMsg}}</h4>
+        </div>
+
+
+
+
+
+
+
+    </form>
+
+
+
+
+
+
+
+
+    </div><!-- /row -->
+  </div><!-- /container -->
+
+
+</body>
+</html>
