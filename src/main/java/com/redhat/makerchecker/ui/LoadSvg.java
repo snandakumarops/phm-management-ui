@@ -16,7 +16,7 @@ public class LoadSvg {
 
         conn.setRequestProperty("Content-Type", "application/json");
         //Switch this out with the user authentication for BC
-        conn.setRequestProperty("Authorization", "Basic cmhwYW1BZG1pbjpMb3N0LTIwMTg=");
+        conn.setRequestProperty("Authorization", "Basic cGFtQWRtaW46cmVkaGF0cGFtMSE=");
 
         if (conn.getResponseCode() != 200) {
             throw new RuntimeException("Failed : HTTP error code : "
@@ -27,8 +27,7 @@ public class LoadSvg {
                 (conn.getInputStream())));
 
         String newValue = "";
-        File file = new File("/Users/sadhananandakumar/Documents/Demos/DocumentGenerator_new/" +
-                "MakerCheckerUI/src/main/resources/webroot/process-diagram.svg");
+        File file = new File("process-diagram.svg");
         FileOutputStream fileOutputStream = new FileOutputStream(file);
         while ((newValue=br.readLine()) != null) {
             fileOutputStream.write(newValue.getBytes());

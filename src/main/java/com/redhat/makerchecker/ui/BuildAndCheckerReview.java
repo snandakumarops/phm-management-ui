@@ -16,7 +16,7 @@ public class BuildAndCheckerReview {
         conn.setRequestProperty("Accept", "application/json");
         conn.setRequestProperty("Content-Type", "application/json");
         //Switch this out with the user authentication for BC
-        conn.setRequestProperty("Authorization", "Basic cmhwYW1BZG1pbjpMb3N0LTIwMTg=");
+        conn.setRequestProperty("Authorization", "Basic cGFtQWRtaW46cmVkaGF0cGFtMSE=");
 
         String input = "{\"artifactName\":\"" + artifactName + "\", " +
                 "\"authorComments\":\""+comments+"\"}";

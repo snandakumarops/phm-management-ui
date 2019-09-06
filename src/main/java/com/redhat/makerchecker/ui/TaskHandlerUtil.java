@@ -30,7 +30,7 @@ public class TaskHandlerUtil {
               conn.setRequestMethod("GET");
               conn.setRequestProperty("Accept", "application/json");
               //Switch this out with the user authentication for BC
-              conn.setRequestProperty("Authorization", "Basic cmhwYW1BZG1pbjpMb3N0LTIwMTg=");
+              conn.setRequestProperty("Authorization", "Basic cGFtQWRtaW46cmVkaGF0cGFtMSE=");
 
               if (conn.getResponseCode() != 200) {
                   throw new RuntimeException("Failed : HTTP error code : "
@@ -100,7 +100,7 @@ public class TaskHandlerUtil {
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
             //Switch this out with the user authentication for BC
-            conn.setRequestProperty("Authorization", "Basic cmhwYW1BZG1pbjpMb3N0LTIwMTg=");
+            conn.setRequestProperty("Authorization", "Basic cGFtQWRtaW46cmVkaGF0cGFtMSE=");
 
             if (conn.getResponseCode() != 200) {
                 throw new RuntimeException("Failed : HTTP error code : "
@@ -154,7 +154,7 @@ public class TaskHandlerUtil {
         conn.setRequestMethod("PUT");
         conn.setRequestProperty("Accept", "application/json");
         //Switch this out with the user authentication for BC
-        conn.setRequestProperty("Authorization", "Basic cmhwYW1BZG1pbjpMb3N0LTIwMTg=");
+        conn.setRequestProperty("Authorization", "Basic cGFtQWRtaW46cmVkaGF0cGFtMSE=");
 
         if (conn.getResponseCode() != 201) {
             throw new RuntimeException("Failed : HTTP error code : "
