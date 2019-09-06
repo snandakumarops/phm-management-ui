@@ -24,13 +24,20 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.BodyHandler;
 import io.vertx.ext.web.handler.StaticHandler;
+import jdk.nashorn.internal.objects.annotations.Property;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 
 import java.util.List;
 
 /**
  * @author <a href="http://tfox.org">Tim Fox</a>
  */
+
 public class MakerCheckerVerticle extends AbstractVerticle {
+
+	public static final String BASIC_AUTH="Basic cGFtQWRtaW46cmVkaGF0cGFtMSE=";
+
 
 	// Convenience method so you can run it in your IDE
 	public static void main(String[] args) {
@@ -45,7 +52,6 @@ public class MakerCheckerVerticle extends AbstractVerticle {
 
 	@Override
 	public void start() {
-
 
 		Router router = Router.router(vertx);
 
@@ -77,7 +83,7 @@ public class MakerCheckerVerticle extends AbstractVerticle {
 	private void approve(RoutingContext routingContext) {
 		try {
 			String taskId = routingContext.request().getParam("taskId");
-			TaskHandlerUtil.approveOrReject(true, taskId);
+			TaskHandlerUtil.approveOrReject(true, taskId,BASIC_AUTH);
 			routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
 					.end(Json.encodePrettily("The Changes will now be promoted."));
 
@@ -95,7 +101,7 @@ public class MakerCheckerVerticle extends AbstractVerticle {
 
 			String comments = routingContext.request().getParam("authorComments");
 
-			BuildAndCheckerReview.initiateMakerCheckerWorkflow(artifactName, comments);
+			BuildAndCheckerReview.initiateMakerCheckerWorkflow(artifactName, comments,BASIC_AUTH);
 			routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
 					.end(Json.encodePrettily("Changes will be sent to the checker for review."));
 
@@ -112,7 +118,7 @@ public class MakerCheckerVerticle extends AbstractVerticle {
 	private void reject(RoutingContext routingContext) {
 		try {
 			String taskId = routingContext.request().getParam("taskId");
-			TaskHandlerUtil.approveOrReject(false, taskId);
+			TaskHandlerUtil.approveOrReject(false, taskId,BASIC_AUTH);
 			routingContext.response().setStatusCode(200).putHeader("content-type", "application/json")
 					.end(Json.encodePrettily("The changes have been sent back to the Author"));
 
@@ -127,7 +133,7 @@ public class MakerCheckerVerticle extends AbstractVerticle {
 		private void getSimulationDashboardForBaseList(RoutingContext routingContext) {
 		try {
 			String taskId = routingContext.request().getParam("taskId");
-			List<RulesFired> taskSummary = TaskHandlerUtil.fetchSimulation("baseList",taskId);
+			List<RulesFired> taskSummary = TaskHandlerUtil.fetchSimulation("baseList",taskId,BASIC_AUTH);
 			System.out.println(taskSummary);
 			routingContext.response().setStatusCode(201).putHeader("content-type", "application/json")
 					.end(Json.encodePrettily(taskSummary));
@@ -143,7 +149,7 @@ public class MakerCheckerVerticle extends AbstractVerticle {
 		try {
 			String instanceId = routingContext.request().getParam("instanceId");
 			String containerId = routingContext.request().getParam("containerId");
-			LoadSvg.loadSvg(instanceId,containerId);
+			LoadSvg.loadSvg(instanceId,containerId,BASIC_AUTH);
 			routingContext.response().setStatusCode(201).putHeader("content-type", "application/json")
 					.end(Json.encodePrettily("success"));
 
@@ -157,7 +163,7 @@ public class MakerCheckerVerticle extends AbstractVerticle {
 	private void getSimulationDashboardForSimulationList(RoutingContext routingContext) {
 		try {
 			String taskId = routingContext.request().getParam("taskId");
-			List<RulesFired> taskSummary = TaskHandlerUtil.fetchSimulation("simulationList",taskId);
+			List<RulesFired> taskSummary = TaskHandlerUtil.fetchSimulation("simulationList",taskId,BASIC_AUTH);
 			System.out.println(taskSummary);
 			routingContext.response().setStatusCode(201).putHeader("content-type", "application/json")
 					.end(Json.encodePrettily(taskSummary));
@@ -173,7 +179,7 @@ public class MakerCheckerVerticle extends AbstractVerticle {
 	private void getTaskDashboard(RoutingContext routingContext) {
 
 		try {
-			List<TaskSummaryObject> taskSummary = TaskHandlerUtil.fetchDashboardData();
+			List<TaskSummaryObject> taskSummary = TaskHandlerUtil.fetchDashboardData(BASIC_AUTH);
 			System.out.println(taskSummary);
 			routingContext.response().setStatusCode(201).putHeader("content-type", "application/json")
 					.end(Json.encodePrettily(taskSummary));

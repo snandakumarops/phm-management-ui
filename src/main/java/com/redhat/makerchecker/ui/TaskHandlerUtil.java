@@ -13,7 +13,7 @@ import java.util.List;
 
 public class TaskHandlerUtil {
 
-      public static List<TaskSummaryObject> fetchDashboardData() throws Exception {
+      public static List<TaskSummaryObject> fetchDashboardData(String auth) throws Exception {
           String output = "";
           TaskSummaryObjectList taskSummaryObjectList = new TaskSummaryObjectList();
           List<TaskSummaryObject> taskSummaryObjects = new ArrayList<>();
@@ -25,12 +25,12 @@ public class TaskHandlerUtil {
 
               TaskSummaryObject taskSummaryObject = null;
               URL url = new URL("http://localhost:8080/kie-server/services/rest/server/queries/tasks/instances/pot-owners?" +
-                      "status=Created&status=Ready&status=Reserved&status=InProgress&user=rhpamAdmin");
+                      "status=Created&status=Ready&status=Reserved&status=InProgress&user=pamAdmin");
               HttpURLConnection conn = (HttpURLConnection) url.openConnection();
               conn.setRequestMethod("GET");
               conn.setRequestProperty("Accept", "application/json");
               //Switch this out with the user authentication for BC
-              conn.setRequestProperty("Authorization", "Basic cGFtQWRtaW46cmVkaGF0cGFtMSE=");
+              conn.setRequestProperty("Authorization", auth);
 
               if (conn.getResponseCode() != 200) {
                   throw new RuntimeException("Failed : HTTP error code : "
@@ -86,7 +86,7 @@ public class TaskHandlerUtil {
           return taskSummaryObjects;
       }
 
-    public static List<RulesFired> fetchSimulation(String listType, String taskId) throws Exception {
+    public static List<RulesFired> fetchSimulation(String listType, String taskId, String auth) throws Exception {
         String output = "";
 
         List<RulesFired> taskSummaryObjects = new ArrayList<>();
@@ -100,7 +100,7 @@ public class TaskHandlerUtil {
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
             //Switch this out with the user authentication for BC
-            conn.setRequestProperty("Authorization", "Basic cGFtQWRtaW46cmVkaGF0cGFtMSE=");
+            conn.setRequestProperty("Authorization",auth);
 
             if (conn.getResponseCode() != 200) {
                 throw new RuntimeException("Failed : HTTP error code : "
@@ -146,7 +146,7 @@ public class TaskHandlerUtil {
     }
 
 
-    public static void approveOrReject(boolean approval, String taskId) throws Exception {
+    public static void approveOrReject(boolean approval, String taskId, String auth) throws Exception {
         String output = "";
 
         URL url = new URL("http://localhost:8080/kie-server/services/rest/server/containers/MakerCheckerNewProject_1.0.0/tasks/" + taskId + "/states/started");
@@ -154,7 +154,7 @@ public class TaskHandlerUtil {
         conn.setRequestMethod("PUT");
         conn.setRequestProperty("Accept", "application/json");
         //Switch this out with the user authentication for BC
-        conn.setRequestProperty("Authorization", "Basic cGFtQWRtaW46cmVkaGF0cGFtMSE=");
+        conn.setRequestProperty("Authorization", auth);
 
         if (conn.getResponseCode() != 201) {
             throw new RuntimeException("Failed : HTTP error code : "
@@ -170,7 +170,7 @@ public class TaskHandlerUtil {
         conn1.setRequestProperty("accept", "application/json");
 
         String input = "{\"approved\":" + approval + "}";
-        conn1.setRequestProperty("Authorization", "Basic cmhwYW1BZG1pbjpMb3N0LTIwMTg=");
+        conn1.setRequestProperty("Authorization", auth);
 
         OutputStream os = conn1.getOutputStream();
         os.write(input.getBytes());

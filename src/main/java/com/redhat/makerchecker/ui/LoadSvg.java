@@ -6,7 +6,7 @@ import java.net.URL;
 
 public class LoadSvg {
 
-    public static void loadSvg(String processInstanceId, String artifactName) throws Exception {
+    public static void loadSvg(String processInstanceId, String artifactName, String auth) throws Exception {
         String output = "";
 
         URL url = new URL("http://localhost:8080/kie-server/services/rest/server" +
@@ -16,7 +16,7 @@ public class LoadSvg {
 
         conn.setRequestProperty("Content-Type", "application/json");
         //Switch this out with the user authentication for BC
-        conn.setRequestProperty("Authorization", "Basic cGFtQWRtaW46cmVkaGF0cGFtMSE=");
+        conn.setRequestProperty("Authorization", auth);
 
         if (conn.getResponseCode() != 200) {
             throw new RuntimeException("Failed : HTTP error code : "

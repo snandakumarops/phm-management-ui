@@ -6,7 +6,9 @@ import java.net.URL;
 
 public class BuildAndCheckerReview {
 
-    public static void initiateMakerCheckerWorkflow(String artifactName, String comments) throws Exception {
+
+
+    public static void initiateMakerCheckerWorkflow(String artifactName, String comments, String auth) throws Exception {
         String output = "";
 
         URL url = new URL("http://localhost:8080/kie-server/services/rest/server/containers/MakerCheckerNewProject_1.0.0/" +
@@ -16,7 +18,8 @@ public class BuildAndCheckerReview {
         conn.setRequestProperty("Accept", "application/json");
         conn.setRequestProperty("Content-Type", "application/json");
         //Switch this out with the user authentication for BC
-        conn.setRequestProperty("Authorization", "Basic cGFtQWRtaW46cmVkaGF0cGFtMSE=");
+
+        conn.setRequestProperty("Authorization", auth);
 
         String input = "{\"artifactName\":\"" + artifactName + "\", " +
                 "\"authorComments\":\""+comments+"\"}";
