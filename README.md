@@ -12,3 +12,5 @@ The `Logged in User` lets us switch between the 3 different users. For example, 
 ![](https://raw.githubusercontent.com/snandakumar87/phm-management-ui/master/src/main/resources/readmeimages/PHM_admin_doc.png)
 
 The second UI screen provides a customer view which is more informational in nature.
+
+
