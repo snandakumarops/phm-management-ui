@@ -3,8 +3,8 @@
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.redhat.makerchecker.ui</groupId>
-	<artifactId>maker-checker-ui</artifactId>
+	<groupId>com.phmprocess</groupId>
+	<artifactId>phm-process-ui</artifactId>
 	<version>1.0.0</version>
 	<packaging>jar</packaging>
 
@@ -43,6 +43,12 @@
 		<dependency>
 			<groupId>org.drools</groupId>
 			<artifactId>drools-workbench-models-commons</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.health-insurance</groupId>
+			<artifactId>PHM-Model</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
@@ -147,12 +153,6 @@
 		</dependency>
 
 
-		<dependency>
-			<groupId>com.myspace</groupId>
-			<artifactId>documentGenerationModel</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
-		</dependency>
-
 
 		<dependency>
 			<groupId>org.drools</groupId>
@@ -165,11 +165,7 @@
 			<artifactId>camel-cxf</artifactId>
 			<version>2.21.1</version>
 		</dependency>
-        <dependency>
-            <groupId>com.redhat</groupId>
-            <artifactId>Personalization_Rules</artifactId>
-            <version>Baseline</version>
-        </dependency>
+
 		<dependency>
 			<groupId>org.kie.server</groupId>
 			<artifactId>kie-server-api</artifactId>
@@ -185,52 +181,39 @@
 	</dependencies>
 
 
+
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.jboss.redhat-fuse</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<version>${bom.version}</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.2.4</version>
 				<executions>
 					<execution>
+						<id>shade-my-jar</id>
+						<phase>install</phase>
 						<goals>
-							<goal>repackage</goal>
+							<goal>shade</goal>
 						</goals>
+						<configuration>
+							<transformers>
+								<transformer
+										implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<manifestEntries>
+										<Main-Class>com.redhat.phmprocess.ui.PHMUIVerticle</Main-Class>
+										<Main-Verticle>com.redhat.phmprocess.ui.PHMUIVerticle</Main-Verticle>
+									</manifestEntries>
+								</transformer>
+							</transformers>
+							<artifactSet/>
+							<outputFile>${project.build.directory}/${project.artifactId}-${project.version}-fat.jar</outputFile>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
+
 		</plugins>
 	</build>
-
-
-	<repositories>
-		<repository>
-			<id>redhat-ga-repository</id>
-			<url>https://maven.repository.redhat.com/ga</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
-
-	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>redhat-ga-repository</id>
-			<url>https://maven.repository.redhat.com/ga</url>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-
-	</pluginRepositories>
-
 
 
 </project>

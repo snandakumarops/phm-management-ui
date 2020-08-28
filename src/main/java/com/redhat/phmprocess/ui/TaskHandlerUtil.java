@@ -1,36 +1,53 @@
-package com.redhat.makerchecker.ui;
+package com.redhat.phmprocess.ui;
 
-import com.RulesFired;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.internal.StringMap;
+import com.health_insurance.phm_model.Response;
+import com.health_insurance.phm_model.Task;
+import org.json.JSONObject;
+
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TaskHandlerUtil {
 
-      public static List<TaskSummaryObject> fetchDashboardData(String auth) throws Exception {
+    static String bcUrl = System.getenv("bcUrl");
+
+
+    static Map<String,String> authMap = new HashMap<>();
+
+    static {
+        authMap.put("Peter","Basic UGV0ZXI6cmVkaGF0cGFtMSE=");
+        authMap.put("Robert","Basic Um9iZXJ0OnJlZGhhdHBhbTEh");
+        authMap.put("Charlie","Basic Q2hhcmxpZTpyZWRoYXRwYW0xIQ==");
+        authMap.put("Mary","Basic TWFyeTpyZWRoYXRwYW0xIQ==");
+    }
+
+      public static List<TaskSummaryObject> fetchDashboardData(String userId) throws Exception {
+        System.out.println("bcurl"+bcUrl);
           String output = "";
           TaskSummaryObjectList taskSummaryObjectList = new TaskSummaryObjectList();
           List<TaskSummaryObject> taskSummaryObjects = new ArrayList<>();
 
           try {
-              File file = new File("/Users/sadhananandakumar/Documents/Demos/DocumentGenerator_new/" +
-                      "DocumentGeneratorUI/src/main/resources/webroot/process-diagram.svg");
+              File file = new File("process-diagram.svg");
               file.delete();
 
               TaskSummaryObject taskSummaryObject = null;
-              URL url = new URL("http://localhost:8080/kie-server/services/rest/server/queries/tasks/instances/pot-owners?" +
-                      "status=Created&status=Ready&status=Reserved&status=InProgress&user=pamAdmin");
+              URL url = new URL("http://localhost:8080/kie-server/services/rest/server/queries/tasks/instances/pot-owners?user="+userId+"Peter&status=Reserved");
               HttpURLConnection conn = (HttpURLConnection) url.openConnection();
               conn.setRequestMethod("GET");
               conn.setRequestProperty("Accept", "application/json");
               //Switch this out with the user authentication for BC
-              conn.setRequestProperty("Authorization", auth);
+              conn.setRequestProperty("Authorization", authMap.get(userId));
 
               if (conn.getResponseCode() != 200) {
                   throw new RuntimeException("Failed : HTTP error code : "
@@ -59,6 +76,7 @@ public class TaskHandlerUtil {
                   processInstId = (Double)stringMap.get("task-proc-inst-id");
                   taskSummaryObject.setTaskId(String.valueOf(d.intValue()));
                   taskSummaryObject.setTaskContainerId((String)stringMap.get("task-container-id"));
+                  taskSummaryObject.setOwner((String)stringMap.get("task-actual-owner"));
                   taskSummaryObject.setSummaryOfChanges((String)stringMap.get("task-description"));
                   taskSummaryObject.setProcessInstanceId(String.valueOf(processInstId.intValue()));
                   taskSummaryObjects.add(taskSummaryObject);
@@ -86,21 +104,22 @@ public class TaskHandlerUtil {
           return taskSummaryObjects;
       }
 
-    public static List<RulesFired> fetchSimulation(String listType, String taskId, String auth) throws Exception {
+
+    public static Map getTaskSummary(String taskId, String auth) throws Exception {
         String output = "";
 
-        List<RulesFired> taskSummaryObjects = new ArrayList<>();
+
 
         try {
 
-            RulesFired rulesFired = null;
+
             URL url = new URL("http://localhost:8080/kie-server/services/rest" +
-                    "/server/containers/MakerCheckerNewProject_1.0.0/processes/instances/"+taskId+"/variable/"+listType);
+                    "/server/containers/PHM-Processes/processes/instances/" + taskId + "/variable/" + "sData");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Accept", "application/json");
             //Switch this out with the user authentication for BC
-            conn.setRequestProperty("Authorization",auth);
+            conn.setRequestProperty("Authorization", auth);
 
             if (conn.getResponseCode() != 200) {
                 throw new RuntimeException("Failed : HTTP error code : "
@@ -113,23 +132,23 @@ public class TaskHandlerUtil {
 
             System.out.println("Output from Server .... \n");
             String newValue;
-            while ((newValue=br.readLine()) != null) {
-                output+= newValue;
+            output = "";
+            while ((newValue = br.readLine()) != null) {
+                output += newValue;
             }
 
-            Object simulation = new Gson().fromJson(output,Object.class);
+            Map response =new Gson().fromJson(output.toString(), Map.class);
+            Map responseMap = (Map) response.get("com.health_insurance.phm_model.Response");
+            Map taskMap = (Map) responseMap.get("task");
+//            String json = new Gson().toJson(taskMap);
+            String gsonString = new Gson().toJson(taskMap.get("com.health_insurance.phm_model.Task"));
+            Map taskObj = new Gson().fromJson(gsonString,Map.class);
 
-            ArrayList<StringMap> map = (ArrayList<StringMap>) simulation;
-            Object obj = null;
-            RulesFired rule = null;
-            for(StringMap stringMap:map) {
-                obj = stringMap.get("com.RulesFired");
-                rule = new Gson().fromJson(new Gson().toJson(obj),RulesFired.class);
-                taskSummaryObjects.add(rule);
 
-            }
+            return taskObj;
 
-            conn.disconnect();
+
+
 
         } catch (MalformedURLException e) {
 
@@ -140,21 +159,19 @@ public class TaskHandlerUtil {
             e.printStackTrace();
 
         }
-
-
-        return taskSummaryObjects;
+        return null;
     }
 
 
-    public static void approveOrReject(boolean approval, String taskId, String auth) throws Exception {
+        public static void approveOrReject(String taskId, String user, String json, String close, String processInstanceId) throws Exception {
         String output = "";
 
-        URL url = new URL("http://localhost:8080/kie-server/services/rest/server/containers/MakerCheckerNewProject_1.0.0/tasks/" + taskId + "/states/started");
+        URL url = new URL("http://localhost:8080/kie-server/services/rest/server/containers/PHM-Processes/tasks/" + taskId + "/states/started");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("PUT");
         conn.setRequestProperty("Accept", "application/json");
         //Switch this out with the user authentication for BC
-        conn.setRequestProperty("Authorization", auth);
+        conn.setRequestProperty("Authorization", authMap.get(user));
 
         if (conn.getResponseCode() != 201) {
             throw new RuntimeException("Failed : HTTP error code : "
@@ -162,21 +179,39 @@ public class TaskHandlerUtil {
         }
 
 
-        URL completeURL = new URL("http://localhost:8080/kie-server/services/rest/server/containers/MakerCheckerNewProject_1.0.0/tasks/" + taskId + "/states/completed");
+        URL completeURL = new URL("http://localhost:8080/kie-server/services/rest/server/containers/PHM-Processes/tasks/" + taskId + "/states/completed");
         HttpURLConnection conn1 = (HttpURLConnection) completeURL.openConnection();
         conn1.setDoOutput(true);
         conn1.setRequestMethod("PUT");
         conn1.setRequestProperty("Content-Type", "application/json");
         conn1.setRequestProperty("accept", "application/json");
 
-        String input = "{\"approved\":" + approval + "}";
-        conn1.setRequestProperty("Authorization", auth);
+
+        conn1.setRequestProperty("Authorization", authMap.get(user));
 
         OutputStream os = conn1.getOutputStream();
-        os.write(input.getBytes());
+        os.write(json.getBytes());
         os.flush();
 
         System.out.println(conn1.getResponseMessage());
+
+        if(close.equals("HARD")) {
+            URL hardCloseUrl = new URL("http://localhost:8080/kie-server/services/rest/server/containers/PHM-Processes/processes/instances/"+processInstanceId+"/signal/hard_close");
+            HttpURLConnection harClseconn = (HttpURLConnection) hardCloseUrl.openConnection();
+            harClseconn.setDoOutput(true);
+            harClseconn.setRequestMethod("POST");
+            harClseconn.setRequestProperty("Content-Type", "application/json");
+            harClseconn.setRequestProperty("accept", "application/json");
+
+
+            harClseconn.setRequestProperty("Authorization", authMap.get(user));
+
+            OutputStream hardCloseOSs = harClseconn.getOutputStream();
+
+            hardCloseOSs.flush();
+
+            System.out.println(harClseconn.getResponseMessage());
+        }
     }
 
 

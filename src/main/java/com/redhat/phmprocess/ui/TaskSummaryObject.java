@@ -1,4 +1,4 @@
-package com.redhat.makerchecker.ui;
+package com.redhat.phmprocess.ui;
 
 public class TaskSummaryObject {
 
@@ -6,6 +6,18 @@ public class TaskSummaryObject {
     private String taskContainerId;
     private String summaryOfChanges;
     private String processInstanceId;
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    private String owner;
+
+
 
     public String getTaskId() {
         return taskId;

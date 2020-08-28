@@ -1,4 +1,4 @@
-package com.redhat.makerchecker.ui;
+package com.redhat.phmprocess.ui;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
