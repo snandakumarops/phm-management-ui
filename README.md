@@ -16,7 +16,7 @@ This page can be accesed at http://localhost:8037/static/customer_view.html
 
 ![](https://raw.githubusercontent.com/snandakumar87/phm-management-ui/master/src/main/resources/readmeimages/PHM_customer.png)
 
-##Setup
+## Setup
 
 ```
 git clone https://github.com/snandakumar87/phm-management-ui
@@ -25,7 +25,7 @@ mvn clean install
 java -jar target/phm-process-ui-1.0.0-fat.jar
 ```
 
-##Additional notes
+## Additional notes
 
 The UI application currently points to localhost:8080 for the business central URL and has the following users setup (Peter, Robert, Charlie and Mary). Make sure to adjust
 the URL and the credentials according to the environment.

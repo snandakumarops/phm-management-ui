@@ -19,7 +19,7 @@ import java.util.Map;
 
 public class TaskHandlerUtil {
 
-    static String bcUrl = System.getenv("bcUrl");
+    static String bcUrl = "http://localhost:8080/kie-server/services/rest";
 
 
     static Map<String,String> authMap = new HashMap<>();
@@ -42,7 +42,7 @@ public class TaskHandlerUtil {
               file.delete();
 
               TaskSummaryObject taskSummaryObject = null;
-              URL url = new URL("http://localhost:8080/kie-server/services/rest/server/queries/tasks/instances/pot-owners?user="+userId+"Peter&status=Reserved");
+              URL url = new URL(bcUrl+"/server/queries/tasks/instances/pot-owners?user="+userId+"Peter&status=Reserved");
               HttpURLConnection conn = (HttpURLConnection) url.openConnection();
               conn.setRequestMethod("GET");
               conn.setRequestProperty("Accept", "application/json");
@@ -113,7 +113,7 @@ public class TaskHandlerUtil {
         try {
 
 
-            URL url = new URL("http://localhost:8080/kie-server/services/rest" +
+            URL url = new URL(bcUrl +
                     "/server/containers/PHM-Processes/processes/instances/" + taskId + "/variable/" + "sData");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
@@ -166,7 +166,7 @@ public class TaskHandlerUtil {
         public static void approveOrReject(String taskId, String user, String json, String close, String processInstanceId) throws Exception {
         String output = "";
 
-        URL url = new URL("http://localhost:8080/kie-server/services/rest/server/containers/PHM-Processes/tasks/" + taskId + "/states/started");
+        URL url = new URL(bcUrl+"/server/containers/PHM-Processes/tasks/" + taskId + "/states/started");
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("PUT");
         conn.setRequestProperty("Accept", "application/json");
@@ -179,7 +179,7 @@ public class TaskHandlerUtil {
         }
 
 
-        URL completeURL = new URL("http://localhost:8080/kie-server/services/rest/server/containers/PHM-Processes/tasks/" + taskId + "/states/completed");
+        URL completeURL = new URL(bcUrl+"/server/containers/PHM-Processes/tasks/" + taskId + "/states/completed");
         HttpURLConnection conn1 = (HttpURLConnection) completeURL.openConnection();
         conn1.setDoOutput(true);
         conn1.setRequestMethod("PUT");
@@ -196,7 +196,7 @@ public class TaskHandlerUtil {
         System.out.println(conn1.getResponseMessage());
 
         if(close.equals("HARD")) {
-            URL hardCloseUrl = new URL("http://localhost:8080/kie-server/services/rest/server/containers/PHM-Processes/processes/instances/"+processInstanceId+"/signal/hard_close");
+            URL hardCloseUrl = new URL(bcUrl+"/server/containers/PHM-Processes/processes/instances/"+processInstanceId+"/signal/hard_close");
             HttpURLConnection harClseconn = (HttpURLConnection) hardCloseUrl.openConnection();
             harClseconn.setDoOutput(true);
             harClseconn.setRequestMethod("POST");
